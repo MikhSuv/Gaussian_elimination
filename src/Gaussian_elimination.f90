@@ -1,10 +1,50 @@
 module Gaussian_elimination
+  use precision_mod
   implicit none
   private
 
-  public :: say_hello
+  public :: read_linear_system
+
 contains
-  subroutine say_hello
-    print *, "Hello, Gaussian_elimination!"
-  end subroutine say_hello
+
+  subroutine read_linear_system(filename, A, B, n)
+    character(len=*), intent(in) :: filename
+    real(dp), allocatable, intent(out) :: A(:, :), B(:) ! СЛУ (A|B)
+    integer, intent(out), optional :: n
+
+    integer :: iunit, iostatus, i
+    character(len=256) :: line ! для чтения первой строки
+
+    open(newunit=iunit, file=filename, status='old', &
+    action = 'read', iostat=iostatus)
+    if (iostatus /= 0) then
+      error stop 'Error occured while opening file'
+    end if
+
+    read(iunit, '(a)', iostat=iostatus) line
+
+    if (iostatus /= 0) then
+      error stop 'Error occured while reading line'
+    end if
+    read(line(2:), *) n 
+
+    ! Выделение памяти под матрицу A
+    allocate(A(n,n))
+    ! Выделение памяти под столбец B
+    allocate(B(n))
+    do i = 1, n
+      ! read(iunit, *, iostat = iostatus) A(i, :)
+      read(iunit, *) A(i, :)
+      ! if (iostatus /= 0) then
+      !   error stop 'Error occured while reading matrix'
+      ! end if
+    end do
+
+    do i = 1, n
+      read(iunit, *) B(i)
+    end do
+
+    close(iunit)
+
+  end subroutine read_linear_system
 end module Gaussian_elimination
