@@ -3,7 +3,7 @@ module Gaussian_elimination
   implicit none
   private
 
-  public :: read_linear_system
+  public :: read_linear_system, write_result
 
 contains
 
@@ -33,11 +33,7 @@ contains
     ! Выделение памяти под столбец B
     allocate(B(n))
     do i = 1, n
-      ! read(iunit, *, iostat = iostatus) A(i, :)
       read(iunit, *) A(i, :)
-      ! if (iostatus /= 0) then
-      !   error stop 'Error occured while reading matrix'
-      ! end if
     end do
 
     do i = 1, n
@@ -47,4 +43,27 @@ contains
     close(iunit)
 
   end subroutine read_linear_system
+
+  subroutine write_result(filename, X)
+    character(len=*), intent(in) :: filename
+    real(dp), intent(in) ::  X(:) ! Столбец результата
+    
+    integer :: n
+    integer :: ounit, i, iostatus
+
+    n = size(X)
+    open(newunit=ounit, file=filename, action='write', iostat=iostatus)
+    if (iostatus /= 0) then
+      error stop 'Error occured while opening file'
+    end if
+    
+    write(ounit, '("# ", i0)') n
+
+    do i = 1, n
+      write(ounit, '(*(e23.15, 1x))') X(i)
+    end do
+
+    close(ounit)
+    
+  end subroutine write_result
 end module Gaussian_elimination

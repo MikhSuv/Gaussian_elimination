@@ -7,7 +7,6 @@ program main
 
   call read_linear_system("data.dat", A, B, n)
   print *, A
-  print *, B
-  print *, n
+  call write_result("result.dat", B)
 
 end program main
