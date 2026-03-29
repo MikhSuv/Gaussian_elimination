@@ -90,7 +90,7 @@ contains
       real(dp), allocatable :: X(:) ! столбец результата
       real(dp), allocatable :: A(:, :) ! расширенная матрица системы
 
-      real(dp) :: leading_entry
+      real(dp) :: leading_entry ! ведуший элемент
       integer :: n
       integer :: i, k
       n = size(B)
@@ -100,9 +100,9 @@ contains
       ! Прамой ход
       do k = 1, n
          leading_entry = a(k, k)
-         ! if (abs(leading_entry) <= eps) then
-         !    print *, "WARNING: the leading_entry in step", k, " is too small: ", leading_entry
-         ! end if
+         if (abs(leading_entry) <= eps) then
+            print *, "WARNING: the leading_entry in step", k, " is too small: ", leading_entry
+         end if
 
          a(k, k:n + 1) = a(k, k:n + 1)/leading_entry
 
@@ -136,9 +136,9 @@ contains
       ! Прамой ход
       do k = 1, n
          leading_entry = a(k, k)
-         ! if (abs(leading_entry) <= eps) then
-         !    print *, "WARNING: the leading_entry in step", k, " is too small: ", leading_entry
-         ! end if
+         if (abs(leading_entry) <= eps) then
+            print *, "WARNING: the leading_entry in step", k, " is too small: ", leading_entry
+         end if
 
          a(k, k:n + 1) = a(k, k:n + 1)/leading_entry
 
@@ -181,9 +181,9 @@ contains
           perm([k, lead_idx]) =  perm([lead_idx, k])
         end if 
 
-        ! if (abs(A(perm(k), k)) < eps) then 
-        !   print *, "WARNING: the leading_entry in step", k, " is too small: ", A(perm(k), k)
-        ! end if 
+        if (abs(A(perm(k), k)) < eps) then 
+          print *, "WARNING: the leading_entry in step", k, " is too small: ", A(perm(k), k)
+        end if 
 
         ! do concurrent (i = k+1:n) local(factor)
         !$OMP PARALLEL DO PRIVATE(i, factor) SHARED(a, k, n, perm)
@@ -193,9 +193,9 @@ contains
         end do
          !$OMP END PARALLEL DO
       end do
-      ! if (abs(A(perm(n), n)) < eps) then 
-      !   print *, "WARNING: the leading_entry in step", n, " is too small: ", A(perm(n), n)
-      ! end if 
+      if (abs(A(perm(n), n)) < eps) then 
+        print *, "WARNING: the leading_entry in step", n, " is too small: ", A(perm(n), n)
+      end if 
 
       allocate(x(n))
       x(n) = A(perm(n), n+1)/A(perm(n),n)
