@@ -13,6 +13,6 @@ program main
   call read_linear_system("data.dat", A, B, n)
   X = solve_linear_system(A, B, trim(arg))
   call write_result("result.dat", X)
-  print *, residual(A, B, X)
+  print *,"Модуль вектора невязки:", residual(A, B, X)
 
 end program main
